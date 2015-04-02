@@ -113,6 +113,10 @@ CREATE TABLE f_bdt_vente OF VENTE_TYPE(
   FOREIGN KEY (Shop) REFERENCES f_bdt_magasin(Magasin_Id)
 );*/
 
+--Create the Index
+
+--CREATE UNIQUE INDEX Catalogue_index ON F_BDT_CATALOGUE(ISBN);
+--CREATE UNIQUE INDEX Magasin_index ON F_BDT_MAGASIN(MAGASIN_ID);
 
 
 
