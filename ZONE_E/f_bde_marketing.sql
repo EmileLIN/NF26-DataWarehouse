@@ -1,0 +1,24 @@
+CREATE TABLE f_bde_marketing(
+Depart_Id Char(2),
+Magasin Varchar(4),
+Rayonnage Varchar(10),
+Rayon Varchar(10),
+Bestseller int,
+Rayon_Recent int
+)
+ORGANIZATION EXTERNAL
+(TYPE ORACLE_LOADER
+DEFAULT DIRECTORY FANTASTIC_SRC_DEPART_DIR
+ACCESS PARAMETERS
+(
+RECORDS DELIMITED BY newline
+SKIP 1
+CHARACTERSET UTF8
+BADFILE FANTASTIC_LOG_DEPART_DIR:'import_marketing_sql.bad'
+LOGFILE FANTASTIC_LOG_DEPART_DIR:'import_marketing_sql.log'
+FIELDS TERMINATED BY ','
+OPTIONALLY ENCLOSED BY '"'
+missing field VALUES are NULL
+)
+LOCATION ('marketing.csv'))
+REJECT LIMIT UNLIMITED;
