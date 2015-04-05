@@ -1,5 +1,4 @@
 --Create the object type catalogue_type 
-
 CREATE OR REPLACE TYPE Catalogue_Type AS OBJECT(
   ISBN          CHAR(13),
   TITRE         VARCHAR(255),
@@ -24,22 +23,29 @@ MEMBER FUNCTION getISBN RETURN CHAR
 MEMBER FUNCTION getLangue RETURN CHAR
   IS 
   BEGIN
+    IF not REGEXP_LIKE(SELF.LANGUE,'\w{3}') THEN
+        RETURN null;
+    END IF;
     RETURN SELF.LANGUE;
   END;
 MEMBER FUNCTION getAuteur RETURN VARCHAR
   IS 
   BEGIN
+    --REPLACE(SELF.AUTEUR,'(,.*)','');    --Question: not know how to just keep the first author
     RETURN SELF.Auteur;
   END;
 MEMBER FUNCTION getEditeur RETURN VARCHAR
   IS 
   BEGIN
+    IF REGEXP_LIKE(SELF.Editeur,'\?') OR REGEXP_LIKE(SELF.Editeur,'^\d') OR REGEXP_LIKE(SELF.Editeur,'^.*ai\slu.*$') THEN
+      RETURN NULL;
+    END IF;
     RETURN SELF.EDITEUR;
   END;
 MEMBER FUNCTION getPublication RETURN VARCHAR
   IS 
   BEGIN
-    RETURN SELF.PUBLICATION;
+    RETURN SUBSTR(SELF.PUBLICATION,1,4);
   END;
 END;
 /
