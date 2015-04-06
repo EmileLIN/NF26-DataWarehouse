@@ -15,7 +15,11 @@ IS
   MEMBER FUNCTION getTicketDate RETURN DATE
   IS
   BEGIN
-    RETURN to_date(SELF.Ticket_Date,'yyyy-mm-dd');
+    IF REGEXP_LIKE(SELF.Ticket_Date,'\d{4}-\d{2}-\d{2}')THEN
+      RETURN TO_DATE(SELF.Ticket_Date,'yyyy-mm-dd','NLS_DATE_LANGUAGE = American');
+    ELSE
+      RETURN NULL;
+    END IF;
   END;
   MEMBER FUNCTION getProduct RETURN CHAR
   IS

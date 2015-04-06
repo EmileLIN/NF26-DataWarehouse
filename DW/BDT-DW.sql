@@ -38,18 +38,34 @@ FROM f_bdt_magasin t;
 
 --Dimension date
 INSERT INTO f_dw_date(Trade_Date,JDS,Semaine,Mois,Trimestre)
-SELECT t.getTradedate(),t.getJDS(),t.getMois(),t.getTrimestre(),t.getSemaine()
+SELECT t.getTradedate(),t.getJDS(),t.getSemaine(),t.getMois(),t.getTrimestre()
 FROM f_bdt_date t;
 
 
 
-
-/*
 --Table de fait f_dw_vente
 INSERT INTO f_dw_vente(Ticket_Date,Product,Shop)
 SELECT t.getTicketDate(),t.getProduct(),t.getShop()
 FROM f_bdt_vente t;
-*/
+
+
+--Step 4 reactive the constraints
+
+CREATE INDEX f_dw_catalogue_index ON f_dw_catalogue(ISBN);
+CREATE INDEX f_dw_date_index ON f_dw_date(trade_date);
+CREATE INDEX f_dw_magasin_index ON f_dw_magasin(magasin_id);
+
+
+
+ALTER TABLE f_dw_date  ENABLE  CONSTRAINT pk_f_dw_date EXCEPTIONS INTO EXCEPTION_RECORDS;
+ALTER TABLE f_dw_catalogue  ENABLE  CONSTRAINT pk_f_dw_catalogue EXCEPTIONS INTO EXCEPTION_RECORDS;
+ALTER TABLE f_dw_magasin  ENABLE  CONSTRAINT pk_f_dw_magasin EXCEPTIONS INTO EXCEPTION_RECORDS;
+ALTER TABLE f_dw_vente ENABLE CONSTRAINT fk_f_dw_vente_date EXCEPTIONS INTO EXCEPTION_RECORDS;
+ALTER TABLE f_dw_vente ENABLE CONSTRAINT fk_f_dw_vente_product EXCEPTIONS INTO EXCEPTION_RECORDS;
+ALTER TABLE f_dw_vente ENABLE CONSTRAINT fk_f_dw_vente_shop EXCEPTIONS INTO EXCEPTION_RECORDS;
+
+
+
 
 
 
