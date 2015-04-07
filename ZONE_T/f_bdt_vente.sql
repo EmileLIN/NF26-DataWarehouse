@@ -24,12 +24,12 @@ IS
   MEMBER FUNCTION getProduct RETURN CHAR
   IS
   BEGIN
-    RETURN SELF.Product;
+      RETURN SELF.Product;
   END;
   MEMBER FUNCTION getShop RETURN VARCHAR
   IS
   BEGIN
-    RETURN SELF.Shop;
+      RETURN SELF.Shop;
   END;
 END;
 /

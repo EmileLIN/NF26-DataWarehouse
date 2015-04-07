@@ -39,7 +39,8 @@ FROM f_bdt_magasin t;
 --Dimension date
 INSERT INTO f_dw_date(Trade_Date,JDS,Semaine,Mois,Trimestre)
 SELECT t.getTradedate(),t.getJDS(),t.getSemaine(),t.getMois(),t.getTrimestre()
-FROM f_bdt_date t;
+FROM f_bdt_date t
+WHERE t.getTradedate() is not NULL;
 
 
 
@@ -66,7 +67,51 @@ ALTER TABLE f_dw_vente ENABLE CONSTRAINT fk_f_dw_vente_shop EXCEPTIONS INTO EXCE
 
 
 
+--Step 5  Delete the data in f_dw_vente which has failed to match the constraints
 
+Delete FROM f_dw_vente WHERE rowid IN (SELECT row_id FROM EXCEPTION_RECORDS);
+
+--Step 6 Retest the constraits 
+
+
+ALTER TABLE f_dw_vente DISABLE CONSTRAINT fk_f_dw_vente_date;
+ALTER TABLE f_dw_vente DISABLE CONSTRAINT fk_f_dw_vente_product;
+ALTER TABLE f_dw_vente DISABLE CONSTRAINT fk_f_dw_vente_shop;
+ALTER TABLE f_dw_date  DISABLE  CONSTRAINT pk_f_dw_date;
+ALTER TABLE f_dw_catalogue  DISABLE  CONSTRAINT pk_f_dw_catalogue;
+ALTER TABLE f_dw_magasin  DISABLE  CONSTRAINT pk_f_dw_magasin;
+
+TRUNCATE TABLE EXCEPTION_RECORDS;
+
+ALTER TABLE f_dw_date  ENABLE  CONSTRAINT pk_f_dw_date EXCEPTIONS INTO EXCEPTION_RECORDS;
+ALTER TABLE f_dw_catalogue  ENABLE  CONSTRAINT pk_f_dw_catalogue EXCEPTIONS INTO EXCEPTION_RECORDS;
+ALTER TABLE f_dw_magasin  ENABLE  CONSTRAINT pk_f_dw_magasin EXCEPTIONS INTO EXCEPTION_RECORDS;
+ALTER TABLE f_dw_vente ENABLE CONSTRAINT fk_f_dw_vente_date EXCEPTIONS INTO EXCEPTION_RECORDS;
+ALTER TABLE f_dw_vente ENABLE CONSTRAINT fk_f_dw_vente_product EXCEPTIONS INTO EXCEPTION_RECORDS;
+ALTER TABLE f_dw_vente ENABLE CONSTRAINT fk_f_dw_vente_shop EXCEPTIONS INTO EXCEPTION_RECORDS;
+
+
+
+
+--Step 6 verification of the final data read in data warehouse
+
+--Table de fait vente
+SELECT COUNT(*) FROM f_dw_vente;
+SELECT * FROM f_dw_vente WHERE ROWNUM <= 100;
+
+
+--Dimension date
+SELECT COUNT(*) FROM f_dw_date;
+SELECT * FROM f_dw_date;
+
+--Dimension magasin
+SELECT COUNT(*) FROM f_dw_magasin;
+SELECT * FROM f_dw_magasin;
+
+
+--Dimension catalogue
+SELECT COUNT(*) FROM f_dw_catalogue;
+SELECT * FROM f_dw_catalogue;
 
 
 

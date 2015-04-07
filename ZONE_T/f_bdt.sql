@@ -3,20 +3,20 @@
 --******************** 
 
 --Create Catalogue table 
-@f_bdt_catalogue.sql;
+@./ZONE_T/f_bdt_catalogue.sql;
 
 --Create Magasin table
-@f_bdt_magasin.sql;
+@./ZONE_T/f_bdt_magasin.sql;
 
 --Create Date table
-@f_bdt_date.sql;
+@./ZONE_T/f_bdt_date.sql;
 
 --Create Vente table
-@f_bdt_vente.sql;
+@./ZONE_T/f_bdt_vente.sql;
 
 
 --Lance the process BDE-BDT
-@BDE-BDT.sql;
+@./ZONE_T/BDE-BDT.sql;
 
 
 

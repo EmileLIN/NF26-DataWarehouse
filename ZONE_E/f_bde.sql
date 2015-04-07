@@ -1,14 +1,14 @@
 --Create the source and log directories
-@directory.sql;
+@./ZONE_E/directory.sql;
 
 --Create View f_bde_catalogue 
-@f_bde_catalogue.sql;
+@./ZONE_E/f_bde_catalogue.sql;
 
 --Create Table f_bde_marketing
-@f_bde_marketing.sql;
+@./ZONE_E/f_bde_marketing.sql;
 
 --Create Table f_bde_departement
-@f_bde_departement.sql;
+@./ZONE_E/f_bde_departement.sql;
 
 --Create Table f_bde_vente.sql
-@f_bde_vente.sql;
+@./ZONE_E/f_bde_vente.sql;
