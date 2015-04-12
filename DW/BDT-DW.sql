@@ -27,6 +27,7 @@ INSERT INTO f_dw_catalogue(ISBN,AUTEUR,LANGUE,PUBLICATION,EDITEUR)
 SELECT t.getISBN(),t.getAuteur(),t.getLangue(),t.getPublication(),t.getEditeur()
 FROM f_bdt_catalogue t;
 
+COMMIT;
 
 --Dimension magasin
 
@@ -34,7 +35,7 @@ INSERT INTO f_dw_magasin(MAGASIN_ID,RAYONNAGE,BESTSELLER,RAYON_RECENT,DPT_NAME,D
 SELECT t.getMagasinId(),t.getRayonage(),t.getBS(),t.getRecent(),t.getDepartement(),t.getPopulation()
 FROM f_bdt_magasin t;
 
-
+COMMIT;
 
 --Dimension date
 INSERT INTO f_dw_date(Trade_Date,JDS,Semaine,Mois,Trimestre)
@@ -42,12 +43,14 @@ SELECT t.getTradedate(),t.getJDS(),t.getSemaine(),t.getMois(),t.getTrimestre()
 FROM f_bdt_date t
 WHERE t.getTradedate() is not NULL;
 
-
+COMMIT;
 
 --Table de fait f_dw_vente
 INSERT INTO f_dw_vente(Ticket_Date,Product,Shop)
 SELECT t.getTicketDate(),t.getProduct(),t.getShop()
 FROM f_bdt_vente t;
+
+COMMIT;
 
 
 --Step 4 reactive the constraints
@@ -68,8 +71,27 @@ ALTER TABLE f_dw_vente ENABLE CONSTRAINT fk_f_dw_vente_shop EXCEPTIONS INTO EXCE
 
 
 --Step 5  Delete the data in f_dw_vente which has failed to match the constraints
+--To solve the problem of foreign key of product, we set the record in fact table 
+--who don not have corresponding value to null
+UPDATE f_dw_vente
+SET PRODUCT = NULL
+WHERE rowid IN 
+(SELECT row_id FROM EXCEPTION_RECORDS WHERE CONSTRAINT_NAME = 'FK_F_DW_VENTE_PRODUCT');
 
-Delete FROM f_dw_vente WHERE rowid IN (SELECT row_id FROM EXCEPTION_RECORDS);
+COMMIT;
+
+--Same thing for shop
+UPDATE f_dw_vente
+SET SHOP = NULL
+WHERE rowid IN 
+(SELECT row_id FROM EXCEPTION_RECORDS WHERE CONSTRAINT_NAME = 'FK_F_DW_VENTE_SHOP');
+
+COMMIT;
+
+--For a record in fact table, if all the three are null, so we delete it
+DELETE FROM f_dw_vente
+WHERE TICKET_DATE IS NULL AND PRODUCT IS NULL AND SHOP IS NULL;
+COMMIT;
 
 --Step 6 Retest the constraits 
 
@@ -97,21 +119,21 @@ ALTER TABLE f_dw_vente ENABLE CONSTRAINT fk_f_dw_vente_shop EXCEPTIONS INTO EXCE
 
 --Table de fait vente
 SELECT COUNT(*) FROM f_dw_vente;
-SELECT * FROM f_dw_vente WHERE ROWNUM <= 100;
+--SELECT * FROM f_dw_vente WHERE ROWNUM <= 100;
 
 
 --Dimension date
 SELECT COUNT(*) FROM f_dw_date;
-SELECT * FROM f_dw_date;
+--SELECT * FROM f_dw_date;
 
 --Dimension magasin
 SELECT COUNT(*) FROM f_dw_magasin;
-SELECT * FROM f_dw_magasin;
+--SELECT * FROM f_dw_magasin;
 
 
 --Dimension catalogue
 SELECT COUNT(*) FROM f_dw_catalogue;
-SELECT * FROM f_dw_catalogue;
+
 
 
 
