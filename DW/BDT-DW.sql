@@ -52,8 +52,31 @@ FROM f_bdt_vente t;
 
 COMMIT;
 
+--Step 4 treat the problem of no corresponding foreign keys 
 
---Step 4 reactive the constraints
+--who don not have corresponding value to null
+UPDATE f_dw_vente
+SET PRODUCT = NULL
+WHERE PRODUCT NOT IN
+(SELECT ISBN FROM f_dw_catalogue);
+
+COMMIT;
+
+--Same thing for shop
+UPDATE f_dw_vente
+SET SHOP = NULL
+WHERE SHOP NOT IN
+(SELECT magasin_id FROM f_dw_magasin);
+
+COMMIT;
+
+--For a record in fact table, if all the three are null, so we delete it
+DELETE FROM f_dw_vente
+WHERE TICKET_DATE IS NULL AND PRODUCT IS NULL AND SHOP IS NULL;
+COMMIT;
+
+
+--Step 5 reactive the constraints
 
 CREATE INDEX f_dw_catalogue_index ON f_dw_catalogue(ISBN);
 CREATE INDEX f_dw_date_index ON f_dw_date(trade_date);
@@ -70,68 +93,33 @@ ALTER TABLE f_dw_vente ENABLE CONSTRAINT fk_f_dw_vente_shop EXCEPTIONS INTO EXCE
 
 
 
---Step 5  Delete the data in f_dw_vente which has failed to match the constraints
---To solve the problem of foreign key of product, we set the record in fact table 
---who don not have corresponding value to null
-UPDATE f_dw_vente
-SET PRODUCT = NULL
-WHERE rowid IN 
-(SELECT row_id FROM EXCEPTION_RECORDS WHERE CONSTRAINT_NAME = 'FK_F_DW_VENTE_PRODUCT');
+--Step 6 Check the exception table 
 
-COMMIT;
-
---Same thing for shop
-UPDATE f_dw_vente
-SET SHOP = NULL
-WHERE rowid IN 
-(SELECT row_id FROM EXCEPTION_RECORDS WHERE CONSTRAINT_NAME = 'FK_F_DW_VENTE_SHOP');
-
-COMMIT;
-
---For a record in fact table, if all the three are null, so we delete it
-DELETE FROM f_dw_vente
-WHERE TICKET_DATE IS NULL AND PRODUCT IS NULL AND SHOP IS NULL;
-COMMIT;
-
---Step 6 Retest the constraits 
-
-
-ALTER TABLE f_dw_vente DISABLE CONSTRAINT fk_f_dw_vente_date;
-ALTER TABLE f_dw_vente DISABLE CONSTRAINT fk_f_dw_vente_product;
-ALTER TABLE f_dw_vente DISABLE CONSTRAINT fk_f_dw_vente_shop;
-ALTER TABLE f_dw_date  DISABLE  CONSTRAINT pk_f_dw_date;
-ALTER TABLE f_dw_catalogue  DISABLE  CONSTRAINT pk_f_dw_catalogue;
-ALTER TABLE f_dw_magasin  DISABLE  CONSTRAINT pk_f_dw_magasin;
-
-TRUNCATE TABLE EXCEPTION_RECORDS;
-
-ALTER TABLE f_dw_date  ENABLE  CONSTRAINT pk_f_dw_date EXCEPTIONS INTO EXCEPTION_RECORDS;
-ALTER TABLE f_dw_catalogue  ENABLE  CONSTRAINT pk_f_dw_catalogue EXCEPTIONS INTO EXCEPTION_RECORDS;
-ALTER TABLE f_dw_magasin  ENABLE  CONSTRAINT pk_f_dw_magasin EXCEPTIONS INTO EXCEPTION_RECORDS;
-ALTER TABLE f_dw_vente ENABLE CONSTRAINT fk_f_dw_vente_date EXCEPTIONS INTO EXCEPTION_RECORDS;
-ALTER TABLE f_dw_vente ENABLE CONSTRAINT fk_f_dw_vente_product EXCEPTIONS INTO EXCEPTION_RECORDS;
-ALTER TABLE f_dw_vente ENABLE CONSTRAINT fk_f_dw_vente_shop EXCEPTIONS INTO EXCEPTION_RECORDS;
-
-
+PROMPT ---Check the excpeiton table to see if there are still some bad data;
+SELECT COUNT(*) FROM EXCEPTION_RECORDS; 
 
 
 --Step 6 verification of the final data read in data warehouse
 
 --Table de fait vente
+PROMPT -- CHECK NUMBER OF RECORDS In Fact table;
 SELECT COUNT(*) FROM f_dw_vente;
 --SELECT * FROM f_dw_vente WHERE ROWNUM <= 100;
 
 
 --Dimension date
+PROMPT -- CHECK NUMBER OF RECORDS In Dimension Date;
 SELECT COUNT(*) FROM f_dw_date;
 --SELECT * FROM f_dw_date;
 
 --Dimension magasin
+PROMPT -- CHECK NUMBER OF RECORDS In Dimension Magasin;
 SELECT COUNT(*) FROM f_dw_magasin;
 --SELECT * FROM f_dw_magasin;
 
 
 --Dimension catalogue
+PROMPT -- CHECK NUMBER OF RECORDS In Dimension Product;
 SELECT COUNT(*) FROM f_dw_catalogue;
 
 

@@ -22,12 +22,12 @@ IS
     END IF;
   END;
   MEMBER FUNCTION getProduct RETURN CHAR
-  IS
+  IS 
   BEGIN
       RETURN SELF.Product;
   END;
   MEMBER FUNCTION getShop RETURN VARCHAR
-  IS
+  IS nb number;
   BEGIN
       RETURN SELF.Shop;
   END;
