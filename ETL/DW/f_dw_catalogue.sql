@@ -2,6 +2,7 @@
 
 CREATE TABLE f_dw_catalogue(
   ISBN          CHAR(13),
+  TITRE			VARCHAR(300),
   AUTEUR        VARCHAR(255),
   LANGUE        CHAR(3),
   PUBLICATION   VARCHAR(50),

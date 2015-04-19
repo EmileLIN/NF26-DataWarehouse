@@ -23,8 +23,8 @@ TRUNCATE TABLE f_dw_magasin;
 
 
 --Dimension catalogue
-INSERT INTO f_dw_catalogue(ISBN,AUTEUR,LANGUE,PUBLICATION,EDITEUR)
-SELECT t.getISBN(),t.getAuteur(),t.getLangue(),t.getPublication(),t.getEditeur()
+INSERT INTO f_dw_catalogue(ISBN,TITRE,AUTEUR,LANGUE,PUBLICATION,EDITEUR)
+SELECT t.getISBN(),t.getTitre(),t.getAuteur(),t.getLangue(),t.getPublication(),t.getEditeur()
 FROM f_bdt_catalogue t;
 
 COMMIT;
