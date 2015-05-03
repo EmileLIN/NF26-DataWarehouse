@@ -1,0 +1,10 @@
+Vous travaillez au sein de l'Empire Intergalactique pour la société LightSaber Inc. dont la raison sociale est de vendre des sabres laser aux Jedis de l'empire (un Jedi est un soldat en charge de la défense des habitants de l'empire).
+
+Afin d'optimiser ses ventes l'entreprise souhaite mettre en place des outils décisionnels d'analyse de ses données. Vous êtes en charge de l'étude de ce système.
+
+« La direction commerciale souhaite savoir si les volumes de ventes et les chiffres d'affaire sont très différents selon les magasins et leur implantation géographique, et quelles sont les variations en fonction des périodes de l'année et au cours des dernières années. Elle souhaite également en profiter pour faire le point sur les performances individuelles de ses vendeurs. »
+
+« La direction production souhaite savoir si les caractéristiques des produits influent sur les ventes et si elles orientent les achats vers des profils particuliers de clients. »
+
+« Le bureau d'étude, souhaite savoir si l'on peut faire le lien entre les volumes de vente, les usines ayant produit les sabres, les designers ayant conçu les sabres et les planètes d'origine des conceptions. »
+
