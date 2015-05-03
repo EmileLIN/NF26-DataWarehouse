@@ -1,0 +1,22 @@
+--Create Extern table store
+
+CREATE TABLE f_bde_store(
+	Store_Id VARCHAR(10),
+	DateOfOpening VARCHAR(20),
+	YearOfOpening VARCHAR(4)
+)
+ORGANIZATION EXTERNAL
+(TYPE ORACLE_LOADER
+DEFAULT DIRECTORY LIGHTSABER_SRC_DIRECTORY
+ACCESS PARAMETERS
+(
+RECORDS DELIMITED BY newline
+CHARACTERSET UTF8
+BADFILE Lightsaber_log_directory:'import_store.bad'
+LOGFILE Lightsaber_log_directory:'import_store.log'
+FIELDS TERMINATED BY ';'
+OPTIONALLY ENCLOSED BY '"'
+missing field VALUES are NULL
+)
+LOCATION ('Store.csv'))
+REJECT LIMIT UNLIMITED;
