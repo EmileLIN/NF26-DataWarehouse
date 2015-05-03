@@ -1,0 +1,21 @@
+--Create Extern table species
+
+CREATE TABLE f_bde_species(
+	SpeciesCode VARCHAR(20),
+	Species VARCHAR(20)
+)
+ORGANIZATION EXTERNAL
+(TYPE ORACLE_LOADER
+DEFAULT DIRECTORY LIGHTSABER_SRC_DIRECTORY
+ACCESS PARAMETERS
+(
+RECORDS DELIMITED BY newline
+CHARACTERSET UTF8
+BADFILE Lightsaber_log_directory:'import_species.bad'
+LOGFILE Lightsaber_log_directory:'import_species.log'
+FIELDS TERMINATED BY ';'
+OPTIONALLY ENCLOSED BY '"'
+missing field VALUES are NULL
+)
+LOCATION ('Species'))
+REJECT LIMIT UNLIMITED;
