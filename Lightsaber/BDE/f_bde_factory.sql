@@ -1,0 +1,23 @@
+--Create Extern table factory
+
+CREATE TABLE f_bde_factory(
+	Factory_nb NUMBER,
+	YearOfCreation VARCHAR(4),
+	AgeOfFactory NUMBER,
+	CAPACITY NUMBER
+)
+ORGANIZATION EXTERNAL
+(TYPE ORACLE_LOADER
+DEFAULT DIRECTORY LIGHTSABER_SRC_DIRECTORY
+ACCESS PARAMETERS
+(
+RECORDS DELIMITED BY newline
+CHARACTERSET UTF8
+BADFILE Lightsaber_log_directory:'import_factory.bad'
+LOGFILE Lightsaber_log_directory:'import_factory.log'
+FIELDS TERMINATED BY ';'
+OPTIONALLY ENCLOSED BY '"'
+missing field VALUES are NULL
+)
+LOCATION ('Factory'))
+REJECT LIMIT UNLIMITED;
